@@ -1,10 +1,8 @@
-import { rolldown } from 'rolldown';
 import { Hono } from 'hono';
 import { serve } from '@hono/node-server';
+import { rolldown } from 'rolldown';
 import { match, P } from 'ts-pattern';
-import virtual from '@rollup/plugin-virtual';
 import path from 'node:path';
-import multi from '@rollup/plugin-multi-entry';
 
 const app = new Hono();
 
@@ -23,7 +21,10 @@ app.get('/:version/:mod{^p5.(?:([a-zA-Z0-9_-]+)\.)?js$}', async (c) => {
   return match<string|undefined>(moduleType)
     .with(undefined, async () => {
       const bundle = await rolldown({
-        input: `./node_modules/p5-${version}/dist/app.js`
+        input: `./node_modules/p5-${version}/dist/app.js`,
+        treeshake: {
+          moduleSideEffects: false
+        }
       });
       const { output } = await bundle.generate({
         format: 'iife',
@@ -48,7 +49,10 @@ app.get('/:version/:mod{^p5.(?:([a-zA-Z0-9_-]+)\.)?js$}', async (c) => {
     .with(P.when((i) => allModules.includes(i)), async () => {
       const input = path.normalize(`./node_modules/p5-${version}/${pjson.exports[`./${moduleType}`]}`);
       const bundle = await rolldown({
-        input
+        input,
+        treeshake: {
+          moduleSideEffects: false
+        }
       });
       const { output } = await bundle.generate({
         format: 'iife',
@@ -77,8 +81,12 @@ app.get('/:version/:mod{^p5.(?:([a-zA-Z0-9_-]+)\.)?js$}', async (c) => {
       ];
       if(additionalModules) input.push(...additionalModules);
 
+      const { default: multi } = await import('@rollup/plugin-multi-entry');
       const bundle = await rolldown({
         input,
+        treeshake: {
+          moduleSideEffects: false
+        },
         plugins: [
           multi()
         ]
