@@ -1,5 +1,5 @@
 {
-  "name": "p5.js-rollup-server",
+  "name": "p5.js-build-server",
   "version": "0.0.1",
   "description": "",
   "main": "index.ts",
