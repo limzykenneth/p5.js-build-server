@@ -42,7 +42,8 @@ app.get('/:version/:mod{^p5.(?:([a-zA-Z0-9_-]+)\.)?js$}', async (c) => {
         minify: 'dce-only'
       });
 
-      return c.text(output[0].code);
+      c.header("Content-Type", "text/javascript; charset=utf-8");
+      return c.body(output[0].code);
     })
     .with('min', async () => {
       const bundle = await rolldown({
@@ -54,7 +55,8 @@ app.get('/:version/:mod{^p5.(?:([a-zA-Z0-9_-]+)\.)?js$}', async (c) => {
         minify: true
       });
 
-      return c.text(output[0].code);
+      c.header("Content-Type", "text/javascript; charset=utf-8");
+      return c.body(output[0].code);
     })
     .with(P.when((i) => allModules.includes(i)), async () => {
       const input = path.normalize(
@@ -72,7 +74,8 @@ app.get('/:version/:mod{^p5.(?:([a-zA-Z0-9_-]+)\.)?js$}', async (c) => {
         minify: true
       });
 
-      return c.text(output[0].code);
+      c.header("Content-Type", "text/javascript; charset=utf-8");
+      return c.body(output[0].code);
     })
     .with('custom', async () => {
       const defaultModules = coreModules.map((mod) => {
@@ -113,7 +116,8 @@ app.get('/:version/:mod{^p5.(?:([a-zA-Z0-9_-]+)\.)?js$}', async (c) => {
         minify: true
       });
 
-      return c.text(output[0].code);
+      c.header("Content-Type", "text/javascript; charset=utf-8");
+      return c.body(output[0].code);
     })
     .otherwise(() => {
       return c.text('Not Found', 404);

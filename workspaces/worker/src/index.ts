@@ -14,8 +14,8 @@ app.get('/:path{.+}', async (c) => {
 	const data = await c.env.BUILDS.get(path);
 
 	if(data){
-		c.header("Content-Type", "text/javascript");
-		return c.text(await data.text());
+		c.header("Content-Type", "text/javascript; charset=utf-8");
+		return c.body(await data.text());
 	}else{
 		if(c.env.DEV === "true"){
 			const originalUrl = new URL(c.req.raw.url);
@@ -28,12 +28,21 @@ app.get('/:path{.+}', async (c) => {
 				const body = await res.text();
 				await c.env.BUILDS.put(path, body);
 				c.header("Content-Type", "text/javascript");
-				return c.text(body);
+				return c.body(body);
 			}else{
 				return res;
 			}
 		}else{
-			return fetch(c.req.raw);
+			const res = await fetch(c.req.raw);
+
+			if(res.ok){
+				const body = await res.text();
+				await c.env.BUILDS.put(path, body);
+				c.header("Content-Type", "text/javascript");
+				return c.body(body);
+			}else{
+				return res;
+			}
 		}
 	}
 });
