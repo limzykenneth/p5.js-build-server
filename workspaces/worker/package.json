@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.ts",
   "scripts": {
-    "dev": "vite --force",
+    "dev": "vite",
     "deploy": "wrangler deploy"
   },
   "type": "module",
