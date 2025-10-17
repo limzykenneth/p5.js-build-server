@@ -1,0 +1,14 @@
+{
+	"name": "p5js-build-cache",
+	"compatibility_date": "2025-04-03",
+	"main": "src/index.ts",
+	"vars": {
+		"DEV": false
+	},
+	"r2_buckets": [
+		{
+			"binding": "BUILDS",
+			"bucket_name": "p5js-builds"
+		}
+	]
+}

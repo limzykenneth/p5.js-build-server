@@ -1,0 +1,8 @@
+{
+  "compilerOptions": {
+    "types": ["./worker-configuration.d.ts"],
+    "lib": "es2023",
+    "target": "es2023",
+    "moduleResolution": "bundler"
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "name": "worker-cache",
+  "version": "0.0.1",
+  "description": "",
+  "main": "index.ts",
+  "scripts": {
+    "dev": "vite"
+  },
+  "type": "module",
+  "author": "Kenneth Lim <hello@limzykenneth.com> (https://limzykenneth.com)",
+  "license": "BSD-3-Clause",
+  "dependencies": {
+    "hono": "^4.9.11"
+  },
+  "devDependencies": {
+    "@cloudflare/vite-plugin": "^1.13.13",
+    "wrangler": "^4.43.0"
+  }
+}

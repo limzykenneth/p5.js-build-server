@@ -3,6 +3,7 @@ import { serve } from '@hono/node-server';
 import { rolldown } from 'rolldown';
 import { match, P } from 'ts-pattern';
 import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 const app = new Hono();
 
@@ -11,8 +12,17 @@ app.get('/:version/:mod{^p5.(?:([a-zA-Z0-9_-]+)\.)?js$}', async (c) => {
   const { version, mod } = c.req.param();
   const moduleType = modRegex.exec(mod)?.[1];
   const coreModules = ['core', 'accessibility', 'friendlyErrors'];
+  const nodeModulesPath = path.resolve( 
+    path.join(
+      fileURLToPath(import.meta.resolve(`p5-${version}`)), 
+      '../..'
+    )
+  );
 
-  const { default: pjson } = await import(`./node_modules/p5-${version}/package.json`, { with: { type: 'json' } });
+  const { default: pjson } = await import(
+    path.join(nodeModulesPath, `./package.json`), 
+    { with: { type: 'json' } }
+  );
   const allModules = Object.keys(pjson.exports).map((key) => {
     const reg = /\.\/?([a-zA-Z0-9_-]+)/;
     return reg.exec(key)?.[1];
@@ -21,7 +31,7 @@ app.get('/:version/:mod{^p5.(?:([a-zA-Z0-9_-]+)\.)?js$}', async (c) => {
   return match<string|undefined>(moduleType)
     .with(undefined, async () => {
       const bundle = await rolldown({
-        input: `./node_modules/p5-${version}/dist/app.js`,
+        input: path.join(nodeModulesPath, `./dist/app.js`),
         treeshake: {
           moduleSideEffects: false
         }
@@ -36,7 +46,7 @@ app.get('/:version/:mod{^p5.(?:([a-zA-Z0-9_-]+)\.)?js$}', async (c) => {
     })
     .with('min', async () => {
       const bundle = await rolldown({
-        input: `./node_modules/p5-${version}/dist/app.js`
+        input: path.join(nodeModulesPath, `./dist/app.js`)
       });
       const { output } = await bundle.generate({
         format: 'iife',
@@ -47,7 +57,9 @@ app.get('/:version/:mod{^p5.(?:([a-zA-Z0-9_-]+)\.)?js$}', async (c) => {
       return c.text(output[0].code);
     })
     .with(P.when((i) => allModules.includes(i)), async () => {
-      const input = path.normalize(`./node_modules/p5-${version}/${pjson.exports[`./${moduleType}`]}`);
+      const input = path.normalize(
+        path.join(nodeModulesPath, pjson.exports[`./${moduleType}`])
+      );
       const bundle = await rolldown({
         input,
         treeshake: {
@@ -64,20 +76,24 @@ app.get('/:version/:mod{^p5.(?:([a-zA-Z0-9_-]+)\.)?js$}', async (c) => {
     })
     .with('custom', async () => {
       const defaultModules = coreModules.map((mod) => {
-        return path.normalize(`./node_modules/p5-${version}/${pjson.exports[`./${mod}`]}`);
+        return path.normalize(
+          path.join(nodeModulesPath, pjson.exports[`./${mod}`])
+        );
       });
 
       const query = c.req.query('modules');
       let additionalModules: string[];
       if(query){
         additionalModules = query.split(',').map((mod) => {
-          return path.normalize(`./node_modules/p5-${version}/${pjson.exports[`./${mod}`]}`);
+          return path.normalize(
+            path.join(nodeModulesPath, pjson.exports[`./${mod}`])
+          );
         });
       }
 
       const input = [
         ...defaultModules,
-        `./node_modules/p5-${version}/dist/core/init.js`
+        path.join(nodeModulesPath, `./dist/core/init.js`)
       ];
       if(additionalModules) input.push(...additionalModules);
 
