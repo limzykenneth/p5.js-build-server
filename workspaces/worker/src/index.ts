@@ -57,6 +57,7 @@ app.get('/:path{.+}', async (c) => {
 			}
 		}
 
+		response.header.set("Cache-Control", "public, max-age=31536000");
 		c.executionCtx.waitUntil(cache.put(c.req.url, response.clone()));
 	}
 
