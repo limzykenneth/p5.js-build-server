@@ -57,12 +57,12 @@ app.get('/:path{.+}', async (c) => {
 			}
 		}
 
-		response.header.set("Cache-Control", "public, max-age=31536000");
+		response.headers.set("Cache-Control", "public, max-age=31536000");
 		c.executionCtx.waitUntil(cache.put(c.req.url, response.clone()));
 	}
 
 	c.header("Content-Type", "text/javascript; charset=utf-8");
-	c.header("etag", bufferToBase64(contentHash));
+	c.header("ETag", bufferToBase64(contentHash));
 	c.header("Cache-Control", "public, max-age=31536000");
 
 	return response;
@@ -72,11 +72,6 @@ async function digestMessage(message: string) {
   const msgUint8 = new TextEncoder().encode(message); // encode as (utf-8) Uint8Array
   const hashBuffer = await crypto.subtle.digest("SHA-256", msgUint8); // hash the message
   return hashBuffer;
-  // const hashArray = Array.from(new Uint8Array(hashBuffer)); // convert buffer to byte array
-  // const hashHex = hashArray
-  //   .map((b) => String.fromCharCode(b))
-  //   .join(""); // convert bytes to hex string
-  // return btoa(hashHex);
 }
 
 function bufferToBase64(buf: ArrayBuffer){
