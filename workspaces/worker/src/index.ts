@@ -58,11 +58,12 @@ app.get('/:path{.+}', async (c) => {
 		}
 
 		response.headers.set("Cache-Control", "public, max-age=31536000");
+		response.headers.set("ETag", bufferToBase64(contentHash));
 		c.executionCtx.waitUntil(cache.put(c.req.url, response.clone()));
 	}
 
 	c.header("Content-Type", "text/javascript; charset=utf-8");
-	c.header("ETag", bufferToBase64(contentHash));
+	if(contentHash) c.header("ETag", bufferToBase64(contentHash));
 	c.header("Cache-Control", "public, max-age=31536000");
 
 	return response;
