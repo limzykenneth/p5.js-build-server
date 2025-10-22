@@ -17,6 +17,8 @@ app.get('/:path{.+}', async (c) => {
 
 	const cache = caches.default;
 	let response = await cache.match(c.req.url);
+	if (response) return response;
+
 	let contentHash: ArrayBuffer;
 
 	if(!response){
@@ -61,10 +63,6 @@ app.get('/:path{.+}', async (c) => {
 		response.headers.set("ETag", bufferToBase64(contentHash));
 		c.executionCtx.waitUntil(cache.put(c.req.url, response.clone()));
 	}
-
-	c.header("Content-Type", "text/javascript; charset=utf-8");
-	if(contentHash) c.header("ETag", bufferToBase64(contentHash));
-	c.header("Cache-Control", "public, max-age=31536000");
 
 	return response;
 });

@@ -1,6 +1,7 @@
 import { Hono } from 'hono';
 import { serve } from '@hono/node-server';
 import { rolldown } from 'rolldown';
+import { replacePlugin } from 'rolldown/experimental';
 import { match, P } from 'ts-pattern';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -12,15 +13,15 @@ app.get('/:version/:mod{^p5.(?:([a-zA-Z0-9_-]+)\.)?js$}', async (c) => {
   const { version, mod } = c.req.param();
   const moduleType = modRegex.exec(mod)?.[1];
   const coreModules = ['core', 'accessibility', 'friendlyErrors'];
-  const nodeModulesPath = path.resolve( 
+  const nodeModulesPath = path.resolve(
     path.join(
-      fileURLToPath(import.meta.resolve(`p5-${version}`)), 
+      fileURLToPath(import.meta.resolve(`p5-${version}`)),
       '../..'
     )
   );
 
   const { default: pjson } = await import(
-    path.join(nodeModulesPath, `./package.json`), 
+    path.join(nodeModulesPath, `./package.json`),
     { with: { type: 'json' } }
   );
   const allModules = Object.keys(pjson.exports).map((key) => {
@@ -52,7 +53,13 @@ app.get('/:version/:mod{^p5.(?:([a-zA-Z0-9_-]+)\.)?js$}', async (c) => {
       const { output } = await bundle.generate({
         format: 'iife',
         name: 'p5',
-        minify: true
+        minify: true,
+        sourcemap: 'hidden',
+        plugins: [
+          replacePlugin({
+            IS_MINIFIED: JSON.stringify(true)
+          })
+        ]
       });
 
       c.header("Content-Type", "text/javascript; charset=utf-8");
