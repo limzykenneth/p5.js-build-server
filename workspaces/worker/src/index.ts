@@ -5,6 +5,14 @@ const app = new Hono<{Bindings: Env}>();
 
 app.use(cors());
 
+app.get('/versions', async (c) => {
+  return c.json([]);
+});
+
+app.get('/modules', async (c) => {
+  return c.json([]);
+});
+
 app.get('/:path{.+}', async (c) => {
 	let path = c.req.param("path");
 	let requestedModules = ['core', 'accessibility', 'friendlyErrors'];
