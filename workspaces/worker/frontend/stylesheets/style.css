@@ -1,0 +1,28 @@
+@import "./variables.css";
+
+*,
+*::before,
+*::after{
+	box-sizing: border-box;
+}
+
+html{
+	background: var(--bg-magenta-20);
+	margin: 0;
+	height: 100%;
+	font-family: var(--font-sans);
+}
+
+body{
+	height: 100%;
+	margin: 0;
+	padding: 20px;
+
+	#main{
+		height: 100%;
+		background: white;
+		padding: 20px;
+		position: relative;
+		font-size: 30px;
+	}
+}
