@@ -26,3 +26,10 @@ If the request successfully hits either of the cache layers, the request should 
 ## Caveats
 * By design there is no way to clear cache, once the library is built it should always be served from cache. This avoids unnecessarily hitting the build server. If a manual cache purge is desired, the Cloudflare R2 storage can be selectively purged manually.
 * The built library is not guaranteed to be static. While once built the built file persists, the included dependency version may differ between different variation of the library and the official library release with the usual CDN links. ie. Version 2.2.2 of `p5.min.js` requested from here is not guaranteed to be identical to the one requested from JSDelivr (the library functionality should be the same but both files will have different hash).
+
+## Future work
+Once there is more clarity and stability to run Rolldown in Cloudflare Workers directly, it would be nice to bypass the need to have a separate Node.js server acting as the build server.
+
+The frontend can be further developed to provide JSDelivr and/or esm.sh links.
+
+Some kind of client library to aid in building relevant URL for different modules would be useful as well.
