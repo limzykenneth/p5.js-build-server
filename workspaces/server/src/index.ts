@@ -1,7 +1,7 @@
 import { Hono } from 'hono';
 import { serve } from '@hono/node-server';
 import { rolldown } from 'rolldown';
-import { replacePlugin } from 'rolldown/experimental';
+import { replacePlugin } from 'rolldown/plugins';
 import { match, P } from 'ts-pattern';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';

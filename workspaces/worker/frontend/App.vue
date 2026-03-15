@@ -2,12 +2,16 @@
 import { ref, computed, reactive } from 'vue';
 
 const versions = [
+  '2.2.2',
+  '2.2.1',
+  '2.2.0',
+  '2.1.2',
   '2.1.1',
+  '2.1.0',
   '2.0.5',
   '2.0.4',
   '2.0.3',
-  '2.0.2',
-  '2.0.1'
+  '2.0.2'
 ];
 const bundles = new Map([
   ['p5.js', 'p5.js'],
