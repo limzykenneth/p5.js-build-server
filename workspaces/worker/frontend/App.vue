@@ -2,6 +2,7 @@
 import { ref, computed, reactive } from 'vue';
 
 const versions = [
+  '2.2.3',
   '2.2.2',
   '2.2.1',
   '2.2.0',
