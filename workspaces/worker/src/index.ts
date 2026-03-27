@@ -25,7 +25,9 @@ app.get(
 app.get("/scalar", Scalar({ url: "/openapi.json" }));
 
 app.get("/versions", async (c) => {
-  return c.json([]);
+  const res = await fetch("https://npm.antfu.dev/versions/p5@%3E=2.0.1");
+  const data = await res.json<{ versions: string[] }>();
+  return c.json(data.versions.reverse());
 });
 
 app.get("/modules", async (c) => {

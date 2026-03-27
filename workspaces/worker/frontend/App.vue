@@ -1,19 +1,15 @@
 <script setup lang="ts">
-import { ref, computed, reactive } from 'vue';
+import { ref, computed, reactive, onMounted } from 'vue';
 
-const versions = [
-  '2.2.3',
-  '2.2.2',
-  '2.2.1',
-  '2.2.0',
-  '2.1.2',
-  '2.1.1',
-  '2.1.0',
-  '2.0.5',
-  '2.0.4',
-  '2.0.3',
-  '2.0.2'
-];
+const versions = ref([]);
+const version = ref(versions.value[0] ?? null);
+
+onMounted(async () => {
+  const res = await fetch("/versions");
+  versions.value = await res.json();
+  version.value = versions.value[0];
+});
+
 const bundles = new Map([
   ['p5.js', 'p5.js'],
   ['p5.min.js', 'p5.min.js'],
@@ -37,7 +33,6 @@ const p5Modules = reactive({
   events: false
 });
 
-const version = ref(versions[0]);
 const bundle = ref('p5.js');
 const singleModule = ref('core');
 

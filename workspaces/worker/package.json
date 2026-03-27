@@ -23,6 +23,7 @@
   },
   "devDependencies": {
     "@cloudflare/vite-plugin": "^1.28.0",
+    "@types/semver": "^7.7.1",
     "@vitejs/plugin-vue": "^6.0.5",
     "wrangler": "^4.73.0"
   }
