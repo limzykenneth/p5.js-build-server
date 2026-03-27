@@ -2,6 +2,9 @@
 
 This project provides the frontend and backend required to provide on demand access to individual p5.js modules and custom builds.
 
+## Documentation
+API documentation is generated automatically via Zod as OpenAPI docs. The OpenAPI spec can be access at `/openapi.json` route and a HTML page at `/scalar` route.
+
 ## Setup
 There are two different parts to this project organized as workspaces within the `workspaces` folder:
 * `server` - This is a Node.js project that is responsible for building the individual modules and the custom build. We'll call this the "build server" below.
