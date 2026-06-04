@@ -14,11 +14,11 @@ app.get("/:version/:mod{^p5.(?:([a-zA-Z0-9_-]+)\.)?js$}", async (c) => {
   const moduleType = modRegex.exec(mod)?.[1];
   const coreModules = ["core", "accessibility", "friendlyErrors"];
   const nodeModulesPath = path.resolve(
-    path.join(fileURLToPath(import.meta.resolve(`p5-${version}`)), "../.."),
+    path.join(fileURLToPath(import.meta.resolve(`p5-${version}`)), "../..")
   );
 
   const { default: pjson } = await import(path.join(nodeModulesPath, `./package.json`), {
-    with: { type: "json" },
+    with: { type: "json" }
   });
   const allModules = Object.keys(pjson.exports)
     .map((key) => {
@@ -32,13 +32,13 @@ app.get("/:version/:mod{^p5.(?:([a-zA-Z0-9_-]+)\.)?js$}", async (c) => {
       const bundle = await rolldown({
         input: path.join(nodeModulesPath, `./dist/app.js`),
         treeshake: {
-          moduleSideEffects: false,
-        },
+          moduleSideEffects: false
+        }
       });
       const { output } = await bundle.generate({
         format: "iife",
         name: "p5",
-        minify: "dce-only",
+        minify: "dce-only"
       });
 
       c.header("Content-Type", "text/javascript; charset=utf-8");
@@ -46,7 +46,7 @@ app.get("/:version/:mod{^p5.(?:([a-zA-Z0-9_-]+)\.)?js$}", async (c) => {
     })
     .with("min", async () => {
       const bundle = await rolldown({
-        input: path.join(nodeModulesPath, `./dist/app.js`),
+        input: path.join(nodeModulesPath, `./dist/app.js`)
       });
       const { output } = await bundle.generate({
         format: "iife",
@@ -55,9 +55,9 @@ app.get("/:version/:mod{^p5.(?:([a-zA-Z0-9_-]+)\.)?js$}", async (c) => {
         sourcemap: "hidden",
         plugins: [
           replacePlugin({
-            IS_MINIFIED: JSON.stringify(true),
-          }),
-        ],
+            IS_MINIFIED: JSON.stringify(true)
+          })
+        ]
       });
 
       c.header("Content-Type", "text/javascript; charset=utf-8");
@@ -73,35 +73,43 @@ app.get("/:version/:mod{^p5.(?:([a-zA-Z0-9_-]+)\.)?js$}", async (c) => {
             nodeModulesPath,
             typeof pjson.exports[`./${moduleType}`] === "string"
               ? pjson.exports[`./${moduleType}`]
-              : pjson.exports[`./${moduleType}`].default,
-          ),
+              : pjson.exports[`./${moduleType}`].default
+          )
         );
         const bundle = await rolldown({
           input,
           treeshake: {
-            moduleSideEffects: false,
-          },
+            moduleSideEffects: false
+          }
         });
         const { output } = await bundle.generate({
           format: "iife",
           name: moduleType === "core" ? "p5" : undefined,
-          minify: true,
+          minify: true
         });
 
         c.header("Content-Type", "text/javascript; charset=utf-8");
         return c.body(output[0].code);
-      },
+      }
     )
     .with("custom", async () => {
       const defaultModules = coreModules.map((mod) => {
-        return path.normalize(path.join(nodeModulesPath, pjson.exports[`./${mod}`]));
+        if (typeof pjson.exports[`./${mod}`] === "string") {
+          return path.normalize(path.join(nodeModulesPath, pjson.exports[`./${mod}`]));
+        } else {
+          return path.normalize(path.join(nodeModulesPath, pjson.exports[`./${mod}`].default));
+        }
       });
 
       const query = c.req.query("modules");
       let additionalModules: string[];
       if (query) {
         additionalModules = query.split(",").map((mod) => {
-          return path.normalize(path.join(nodeModulesPath, pjson.exports[`./${mod}`]));
+          if (typeof pjson.exports[`./${mod}`] === "string") {
+            return path.normalize(path.join(nodeModulesPath, pjson.exports[`./${mod}`]));
+          } else {
+            return path.normalize(path.join(nodeModulesPath, pjson.exports[`./${mod}`].default));
+          }
         });
       }
 
@@ -112,14 +120,14 @@ app.get("/:version/:mod{^p5.(?:([a-zA-Z0-9_-]+)\.)?js$}", async (c) => {
       const bundle = await rolldown({
         input,
         treeshake: {
-          moduleSideEffects: false,
+          moduleSideEffects: false
         },
-        plugins: [multi()],
+        plugins: [multi()]
       });
       const { output } = await bundle.generate({
         format: "iife",
         name: "p5",
-        minify: true,
+        minify: true
       });
 
       c.header("Content-Type", "text/javascript; charset=utf-8");
@@ -132,5 +140,5 @@ app.get("/:version/:mod{^p5.(?:([a-zA-Z0-9_-]+)\.)?js$}", async (c) => {
 
 serve({
   fetch: app.fetch,
-  port: 8080,
+  port: 8080
 });
