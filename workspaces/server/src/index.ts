@@ -8,7 +8,7 @@ import { fileURLToPath } from "node:url";
 
 const app = new Hono();
 
-app.get("/:version/:mod{^p5.(?:([a-zA-Z0-9_-]+)\.)?js$}", async (c) => {
+app.get("/:version/:mod{^p5.(?:([a-zA-Z0-9_-]+).)?js$}", async (c) => {
   const modRegex = /^p5.(?:([a-zA-Z0-9_-]+)\.)?js$/;
   const { version, mod } = c.req.param();
   const moduleType = modRegex.exec(mod)?.[1];
@@ -102,7 +102,7 @@ app.get("/:version/:mod{^p5.(?:([a-zA-Z0-9_-]+)\.)?js$}", async (c) => {
       });
 
       const query = c.req.query("modules");
-      let additionalModules: string[];
+      let additionalModules: string[] | null = null;
       if (query) {
         additionalModules = query.split(",").map((mod) => {
           if (typeof pjson.exports[`./${mod}`] === "string") {

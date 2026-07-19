@@ -1,8 +1,9 @@
 {
   "compilerOptions": {
-    "lib": ["es2023"],
+    "lib": ["es2023", "DOM"],
     "target": "es2023",
-    "moduleResolution": "nodenext",
-    "module": "NodeNext"
+    "moduleResolution": "bundler",
+    "module": "esnext",
+    "types": ["node"]
   }
 }

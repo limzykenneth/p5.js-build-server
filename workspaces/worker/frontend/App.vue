@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, reactive, onMounted } from 'vue';
+import { ref, computed, reactive, onMounted } from "vue";
 
 const versions = ref([]);
 const version = ref(versions.value[0] ?? null);
@@ -11,10 +11,10 @@ onMounted(async () => {
 });
 
 const bundles = new Map([
-  ['p5.js', 'p5.js'],
-  ['p5.min.js', 'p5.min.js'],
-  ['p5.mod.js', 'p5.js modules'],
-  ['p5.custom.js', 'p5.js custom build'],
+  ["p5.js", "p5.js"],
+  ["p5.min.js", "p5.min.js"],
+  ["p5.mod.js", "p5.js modules"],
+  ["p5.custom.js", "p5.js custom build"]
 ]);
 const p5Modules = reactive({
   core: true,
@@ -33,15 +33,15 @@ const p5Modules = reactive({
   events: false
 });
 
-const bundle = ref('p5.js');
-const singleModule = ref('core');
+const bundle = ref("p5.js");
+const singleModule = ref("core");
 
 const moduleString = computed(() => {
   const selectedModules = Object.entries(p5Modules).reduce((acc, [name, isSelected]) => {
     if (isSelected) acc.push(name);
     return acc;
   }, []);
-  return `?modules=${selectedModules.join(',')}`;
+  return `?modules=${selectedModules.join(",")}`;
 });
 
 const toggleModule = (name: string) => {
@@ -50,15 +50,15 @@ const toggleModule = (name: string) => {
 
 const bundleURL = computed(() => {
   if (version.value && bundle.value) {
-    if (bundle.value === 'p5.mod.js' && singleModule.value) {
+    if (bundle.value === "p5.mod.js" && singleModule.value) {
       return `${window.location.origin}/${version.value}/p5.${singleModule.value}.js`;
-    } else if (bundle.value === 'p5.custom.js') {
+    } else if (bundle.value === "p5.custom.js") {
       return `${window.location.origin}/${version.value}/${bundle.value}${moduleString.value}`;
-    } else if (bundle.value === 'p5.js' || bundle.value === 'p5.min.js') {
+    } else if (bundle.value === "p5.js" || bundle.value === "p5.min.js") {
       return `${window.location.origin}/${version.value}/${bundle.value}`;
     }
   }
-  return ''
+  return "";
 });
 
 const showCopyMessage = ref(false);
@@ -70,25 +70,25 @@ const copyURL = async () => {
 
 <template>
   <div class="main-container">
-  	<div class="selector-container">
+    <div class="selector-container">
       <span>Please give me URL for</span>
 
-  		<select v-model="bundle">
+      <select v-model="bundle">
         <option v-for="[value, name] in bundles" :value="value">{{ name }}</option>
       </select>
 
-  		<span>at version</span>
+      <span>at version</span>
 
       <select v-model="version">
         <option v-for="v in versions">{{ v }}</option>
-  		</select>
+      </select>
 
-  		<span v-if="bundle === 'p5.mod.js'">
-  	    for module
-  			<select v-if="bundle === 'p5.mod.js'" v-model="singleModule">
-  		    <option v-for="(isSelected, name) in p5Modules">{{ name }}</option>
+      <span v-if="bundle === 'p5.mod.js'">
+        for module
+        <select v-if="bundle === 'p5.mod.js'" v-model="singleModule">
+          <option v-for="(isSelected, name) in p5Modules">{{ name }}</option>
         </select>
-  		</span>
+      </span>
 
       <span v-if="bundle === 'p5.custom.js'">
         with modules
@@ -98,11 +98,13 @@ const copyURL = async () => {
           :class="isSelected ? 'selected' : ''"
           :disabled="['core', 'accessibility', 'friendlyErrors'].includes(name)"
           @click="toggleModule(name)"
-        >{{ name }}</button>
+        >
+          {{ name }}
+        </button>
       </span>
-  	</div>
+    </div>
 
-  	<div class="url-container">
+    <div class="url-container">
       <span class="copy-url">{{ bundleURL }}</span>
       <span class="copy-icon" @click="copyURL">
         <svg
@@ -129,29 +131,30 @@ const copyURL = async () => {
           <span v-if="showCopyMessage" class="copy-action-prompt">Copied!</span>
         </Transition>
       </span>
-  	</div>
+    </div>
   </div>
 </template>
 
 <style scoped>
 @import "./stylesheets/variables.css";
 
-.main-container{
+.main-container {
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
   max-width: 900px;
 
-  .selector-container{
+  .selector-container {
     padding: 0.5rem;
 
-    select, button{
+    select,
+    button {
       font-size: inherit;
       font-family: inherit;
     }
 
-    select{
+    select {
       appearance: none;
       background-color: transparent;
       border: 5px solid var(--bg-magenta-70);
@@ -171,13 +174,13 @@ const copyURL = async () => {
       margin: 0 0.1em;
       color: black;
 
-      &.selected{
+      &.selected {
         background: var(--bg-magenta-20);
       }
     }
   }
 
-  .url-container{
+  .url-container {
     min-height: 3.5rem;
     border: 5px solid var(--bg-magenta-70);
     border-radius: 0.25em;
@@ -187,17 +190,17 @@ const copyURL = async () => {
     justify-content: space-between;
     align-items: center;
 
-    .copy-url{
+    .copy-url {
       padding: 1rem;
     }
 
-    .copy-icon{
+    .copy-icon {
       display: flex;
       align-items: center;
       cursor: pointer;
       padding: 1rem;
 
-      .copy-action-prompt{
+      .copy-action-prompt {
         position: absolute;
         right: -15%;
       }
@@ -205,21 +208,21 @@ const copyURL = async () => {
   }
 }
 
-.v-enter-from{
+.v-enter-from {
   display: block;
   opacity: 1;
 }
 
-.v-enter-active{
+.v-enter-active {
   transition: opacity 1s linear;
   transition-delay: 2s;
 }
 
-.v-enter-to{
+.v-enter-to {
   opacity: 0;
 }
 
-.v-leave-from{
+.v-leave-from {
   opacity: 0;
 }
 </style>

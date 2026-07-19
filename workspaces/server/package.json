@@ -2,15 +2,15 @@
   "name": "build-server",
   "version": "0.1.0",
   "description": "",
+  "license": "BSD-3-Clause",
+  "author": "Kenneth Lim <hello@limzykenneth.com> (https://limzykenneth.com)",
+  "type": "module",
   "main": "src/index.ts",
   "scripts": {
     "start": "node src/index.ts",
     "dev": "node --watch src/index.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "type": "module",
-  "author": "Kenneth Lim <hello@limzykenneth.com> (https://limzykenneth.com)",
-  "license": "BSD-3-Clause",
   "dependencies": {
     "@hono/node-server": "^2.0.4",
     "@rollup/plugin-multi-entry": "^7.0.0",
@@ -32,6 +32,6 @@
     "ts-pattern": "^5.8.0"
   },
   "devDependencies": {
-    "@types/node": "^24.8.1"
+    "@types/node": "^24.13.3"
   }
 }

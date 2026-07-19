@@ -4,6 +4,9 @@ import { describeRoute, openAPIRouteHandler, validator } from "hono-openapi";
 import z from "zod";
 import { Scalar } from "@scalar/hono-api-reference";
 import semver from "semver";
+import { getRandom } from "@cloudflare/containers";
+
+export { Builder } from "./Builder";
 
 const app = new Hono<{ Bindings: Env }>();
 
@@ -32,6 +35,12 @@ app.get("/versions", async (c) => {
 
 app.get("/modules", async (c) => {
   return c.json([]);
+});
+
+app.get("/builder", async (c) => {
+  const container = await getRandom(c.env.BUILDER, 3);
+  const response = await container.fetch("http://localhost:5173/2.0.5/p5.shape.js");
+  return response;
 });
 
 /**
@@ -114,18 +123,20 @@ app.get(
 
       if (data) {
         // Data cached in R2
-        contentHash = data.checksums.sha256;
+        contentHash = data.checksums.sha256 as ArrayBuffer;
         c.header("Content-Type", "text/javascript; charset=utf-8");
         response = c.body(await data.text());
       } else {
         // Data not cached anywhere, generate from origin server
         let res: Response;
         if (c.env.DEV === "true") {
-          const originalUrl = new URL(c.req.raw.url);
-          const targetUrl = new URL(c.env.BUILD_SERVER);
-          originalUrl.host = targetUrl.host;
-          const req = new Request(originalUrl, c.req.raw);
-          res = await fetch(req);
+          // const originalUrl = new URL(c.req.raw.url);
+          // const targetUrl = new URL(c.env.BUILD_SERVER);
+          // originalUrl.host = targetUrl.host;
+          // const req = new Request(originalUrl, c.req.raw);
+          // res = await fetch(req);
+          const container = await getRandom(c.env.BUILDER, 3);
+          res = await container.fetch(c.req.raw);
         } else {
           res = await fetch(c.req.raw);
         }

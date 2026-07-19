@@ -1,18 +1,40 @@
 {
-	"name": "p5js-build-cache",
-	"compatibility_date": "2025-04-03",
-	"main": "src/index.ts",
-	"observability": {
-		"enabled": true,
-		"head_sampling_rate": 1
-	},
-	"vars": {
-		"DEV": false
-	},
-	"r2_buckets": [
-		{
-			"binding": "BUILDS",
-			"bucket_name": "p5js-builds"
-		}
-	]
+  "$schema": "../../node_modules/wrangler/config-schema.json",
+  "name": "p5js-build-cache",
+  "compatibility_date": "2025-04-03",
+  "main": "src/index.ts",
+  "observability": {
+    "enabled": true,
+    "head_sampling_rate": 1
+  },
+  "vars": {
+    "DEV": false
+  },
+  "r2_buckets": [
+    {
+      "binding": "BUILDS",
+      "bucket_name": "p5js-builds"
+    }
+  ],
+  "containers": [
+    {
+      "max_instances": 3,
+      "class_name": "Builder",
+      "image": "../server/Dockerfile"
+    }
+  ],
+  "durable_objects": {
+    "bindings": [
+      {
+        "name": "BUILDER",
+        "class_name": "Builder"
+      }
+    ]
+  },
+  "migrations": [
+    {
+      "tag": "v1",
+      "new_sqlite_classes": ["Builder"]
+    }
+  ]
 }

@@ -1,6 +1,6 @@
 @font-face {
   font-family: "National Park";
-  src:url("fonts/NationalPark-Regular.woff2") format("woff2");
+  src: url("fonts/NationalPark-Regular.woff2") format("woff2");
   font-weight: 400;
   font-style: normal;
   font-display: swap;
@@ -54,9 +54,9 @@
   font-display: swap;
 }
 
-:root{
-	--bg-magenta-70: #f1678e;
-	--bg-magenta-20: #f9b2c6;
-	--font-sans: "National Park", sans-serif;
-	--font-serif: "Courier", monospace;
+:root {
+  --bg-magenta-70: #f1678e;
+  --bg-magenta-20: #f9b2c6;
+  --font-sans: "National Park", sans-serif;
+  --font-serif: "Courier", monospace;
 }

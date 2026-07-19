@@ -2,17 +2,18 @@
   "name": "worker-cache",
   "version": "0.1.0",
   "description": "",
+  "license": "BSD-3-Clause",
+  "author": "Kenneth Lim <hello@limzykenneth.com> (https://limzykenneth.com)",
+  "type": "module",
   "main": "index.ts",
   "scripts": {
-    "dev": "vite",
-    "build": "vite build",
+    "dev": "vp dev",
+    "build": "vp build",
     "predeploy": "npm run build",
     "deploy": "wrangler deploy"
   },
-  "type": "module",
-  "author": "Kenneth Lim <hello@limzykenneth.com> (https://limzykenneth.com)",
-  "license": "BSD-3-Clause",
   "dependencies": {
+    "@cloudflare/containers": "^0.3.7",
     "@hono/standard-validator": "^0.2.2",
     "@scalar/hono-api-reference": "^0.10.20",
     "hono": "^4.12.23",
@@ -22,9 +23,7 @@
     "zod": "^4.4.3"
   },
   "devDependencies": {
-    "@cloudflare/vite-plugin": "^1.39.2",
     "@types/semver": "^7.7.1",
-    "@vitejs/plugin-vue": "^6.0.7",
-    "wrangler": "^4.97.0"
+    "@vitejs/plugin-vue": "^6.0.7"
   }
 }
