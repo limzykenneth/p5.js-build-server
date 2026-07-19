@@ -5,6 +5,8 @@ import z from "zod";
 import { Scalar } from "@scalar/hono-api-reference";
 import semver from "semver";
 
+export { Builder } from "./Builder";
+
 const app = new Hono<{ Bindings: Env }>();
 
 app.use(cors());
@@ -16,10 +18,10 @@ app.get(
       info: {
         title: "p5.js Build Server",
         version: "1.0.0",
-        description: "On demand custom build for p5.js"
-      }
-    }
-  })
+        description: "On demand custom build for p5.js",
+      },
+    },
+  }),
 );
 
 app.get("/scalar", Scalar({ url: "/openapi.json" }));
@@ -46,12 +48,12 @@ app.get(
         content: {
           "text/javascript": {
             schema: {
-              type: "string"
-            }
-          }
-        }
-      }
-    }
+              type: "string",
+            },
+          },
+        },
+      },
+    },
   }),
   validator(
     "param",
@@ -63,22 +65,22 @@ app.get(
             return semver.gte(val, "2.0.1");
           },
           {
-            error: "Must be valid semver >=2.0.1"
-          }
+            error: "Must be valid semver >=2.0.1",
+          },
         )
         .meta({
           description: "Valid semver of p5.js fulfulling >=2.0.1",
-          example: "2.2.3"
+          example: "2.2.3",
         }),
       mod: z
         .union([
           z.literal(["p5.js", "p5.min.js", "p5.custom.js"]),
-          z.templateLiteral(["p5.", z.string(), ".js"])
+          z.templateLiteral(["p5.", z.string(), ".js"]),
         ])
         .meta({
-          description: "Specific p5.js module or build."
-        })
-    })
+          description: "Specific p5.js module or build.",
+        }),
+    }),
   ),
   validator(
     "query",
@@ -86,9 +88,9 @@ app.get(
       modules: z.string().optional().meta({
         description:
           "Used with `mod` path of `p5.custom.js` and is a comma separated list of modules to include in the custom build",
-        example: "shape,type,math"
-      })
-    })
+        example: "shape,type,math",
+      }),
+    }),
   ),
   async (c) => {
     let { version, mod } = c.req.param();
@@ -136,8 +138,8 @@ app.get(
           contentHash = await digestMessage(body);
           c.executionCtx.waitUntil(
             c.env.BUILDS.put(path, body, {
-              sha256: contentHash
-            })
+              sha256: contentHash,
+            }),
           );
           c.header("Content-Type", "text/javascript; charset=utf-8");
           response = c.body(body);
@@ -153,7 +155,7 @@ app.get(
     }
 
     return response;
-  }
+  },
 );
 
 async function digestMessage(message: string) {

@@ -1,18 +1,32 @@
 {
-	"name": "p5js-build-cache",
-	"compatibility_date": "2025-04-03",
-	"main": "src/index.ts",
-	"observability": {
-		"enabled": true,
-		"head_sampling_rate": 1
-	},
-	"vars": {
-		"DEV": false
-	},
-	"r2_buckets": [
-		{
-			"binding": "BUILDS",
-			"bucket_name": "p5js-builds"
-		}
-	]
+  "name": "p5js-build-cache",
+  "compatibility_date": "2025-04-03",
+  "main": "src/index.ts",
+  "observability": {
+    "enabled": true,
+    "head_sampling_rate": 1,
+  },
+  "vars": {
+    "DEV": false,
+  },
+  "r2_buckets": [
+    {
+      "binding": "BUILDS",
+      "bucket_name": "p5js-builds",
+    },
+  ],
+  "durable_objects": {
+    "bindings": [
+      {
+        "name": "BUILDER",
+        "class_name": "Builder",
+      },
+    ],
+  },
+  "migrations": [
+    {
+      "tag": "v1",
+      "new_sqlite_classes": ["Builder"],
+    },
+  ],
 }
